@@ -53,7 +53,7 @@ formLogin.addEventListener("submit", async (evento) => {
   const { error } = await db.auth.signInWithPassword(datosLogin());
 
   if (error) {
-    loginMensaje.textContent = "Correo o contraseña incorrectos.";
+    loginMensaje.textContent = "No se pudo entrar: " + error.message;
   }
 });
 
