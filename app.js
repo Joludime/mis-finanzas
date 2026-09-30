@@ -1,5 +1,9 @@
-const CLAVE_STORAGE = "movimientos";
-
+const pantallaLogin = document.getElementById("pantalla-login");
+const app = document.getElementById("app");
+const formEmail = document.getElementById("form-email");
+const formCodigo = document.getElementById("form-codigo");
+const loginMensaje = document.getElementById("login-mensaje");
+const botonSalir = document.getElementById("boton-salir");
 const form = document.getElementById("form-movimiento");
 const lista = document.getElementById("lista-movimientos");
 const vacio = document.getElementById("vacio");
@@ -9,21 +13,124 @@ const ingresosEl = document.getElementById("total-ingresos");
 const gastosEl = document.getElementById("total-gastos");
 const fechaInput = document.getElementById("fecha");
 
-let movimientos = cargarMovimientos();
+if (SUPABASE_URL.includes("PEGA_AQUI")) {
+  pantallaLogin.innerHTML =
+    "<h2>Falta configurar</h2><p class='ayuda'>Edita config.js con la URL y la anon key de tu proyecto de Supabase.</p>";
+  throw new Error("config.js sin configurar");
+}
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let movimientos = [];
+let emailPendiente = "";
 
 fechaInput.value = hoy();
+
+db.auth.onAuthStateChange((evento, sesion) => {
+  mostrarPantalla(sesion);
+  if (sesion) {
+    cargarMovimientos();
+  }
+});
+
+function mostrarPantalla(sesion) {
+  const dentro = Boolean(sesion);
+  pantallaLogin.classList.toggle("hidden", dentro);
+  app.classList.toggle("hidden", !dentro);
+  botonSalir.classList.toggle("hidden", !dentro);
+}
+
+formEmail.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  emailPendiente = document.getElementById("email").value.trim();
+  loginMensaje.textContent = "Enviando código...";
+
+  const { error } = await db.auth.signInWithOtp({ email: emailPendiente });
+
+  if (error) {
+    loginMensaje.textContent = error.message;
+    return;
+  }
+
+  loginMensaje.textContent = "Código enviado. Revisa tu correo.";
+  formEmail.classList.add("hidden");
+  formCodigo.classList.remove("hidden");
+});
+
+formCodigo.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  const token = document.getElementById("codigo").value.trim();
+
+  const { error } = await db.auth.verifyOtp({
+    email: emailPendiente,
+    token,
+    type: "email",
+  });
+
+  if (error) {
+    loginMensaje.textContent = error.message;
+  }
+});
+
+botonSalir.addEventListener("click", async () => {
+  await db.auth.signOut();
+});
 
 form.addEventListener("submit", agregarMovimiento);
 filtroMes.addEventListener("change", renderizar);
 
-function cargarMovimientos() {
-  const datos = localStorage.getItem(CLAVE_STORAGE);
-  return datos ? JSON.parse(datos) : [];
+async function cargarMovimientos() {
+  const { data, error } = await db
+    .from("movimientos")
+    .select("*")
+    .order("fecha", { ascending: false });
+
+  if (error) {
+    alert("No se pudieron cargar los datos: " + error.message);
+    return;
+  }
+
+  movimientos = data.map((movimiento) => ({
+    ...movimiento,
+    monto: Number(movimiento.monto),
+  }));
+
+  renderizar();
 }
 
-function guardarMovimientos() {
-  const datos = JSON.stringify(movimientos);
-  localStorage.setItem(CLAVE_STORAGE, datos);
+async function agregarMovimiento(evento) {
+  evento.preventDefault();
+
+  const nuevo = {
+    descripcion: document.getElementById("descripcion").value.trim(),
+    monto: parseFloat(document.getElementById("monto").value),
+    tipo: document.getElementById("tipo").value,
+    categoria: document.getElementById("categoria").value,
+    fecha: fechaInput.value,
+  };
+
+  const { error } = await db.from("movimientos").insert(nuevo);
+
+  if (error) {
+    alert("No se pudo guardar: " + error.message);
+    return;
+  }
+
+  form.reset();
+  fechaInput.value = hoy();
+
+  await cargarMovimientos();
+}
+
+async function eliminarMovimiento(id) {
+  const { error } = await db.from("movimientos").delete().eq("id", id);
+
+  if (error) {
+    alert("No se pudo borrar: " + error.message);
+    return;
+  }
+
+  await cargarMovimientos();
 }
 
 function hoy() {
@@ -32,33 +139,6 @@ function hoy() {
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
   const dia = String(fecha.getDate()).padStart(2, "0");
   return `${anio}-${mes}-${dia}`;
-}
-
-function agregarMovimiento(evento) {
-  evento.preventDefault();
-
-  const movimiento = {
-    id: Date.now(),
-    descripcion: document.getElementById("descripcion").value.trim(),
-    monto: parseFloat(document.getElementById("monto").value),
-    tipo: document.getElementById("tipo").value,
-    categoria: document.getElementById("categoria").value,
-    fecha: fechaInput.value,
-  };
-
-  movimientos.push(movimiento);
-  guardarMovimientos();
-
-  form.reset();
-  fechaInput.value = hoy();
-
-  renderizar();
-}
-
-function eliminarMovimiento(id) {
-  movimientos = movimientos.filter((movimiento) => movimiento.id !== id);
-  guardarMovimientos();
-  renderizar();
 }
 
 function movimientosFiltrados() {
@@ -164,5 +244,3 @@ function formatearMes(mes) {
   ];
   return `${nombres[Number(numeroMes) - 1]} ${anio}`;
 }
-
-renderizar();

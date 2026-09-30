@@ -30,6 +30,37 @@ header p {
   color: #6b7280;
 }
 
+.hidden {
+  display: none;
+}
+
+.ayuda {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.mensaje {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #2563eb;
+  min-height: 1.2em;
+}
+
+.boton-salir {
+  margin-top: 10px;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  font-weight: 500;
+  padding: 6px 14px;
+}
+
+.boton-salir:hover {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
 .resumen {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
