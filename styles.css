@@ -61,6 +61,17 @@ header p {
   color: #1f2937;
 }
 
+.boton-secundario {
+  background: #fff;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.boton-secundario:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
 .resumen {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

@@ -1,7 +1,7 @@
 const pantallaLogin = document.getElementById("pantalla-login");
 const app = document.getElementById("app");
-const formEmail = document.getElementById("form-email");
-const formCodigo = document.getElementById("form-codigo");
+const formLogin = document.getElementById("form-login");
+const botonCrear = document.getElementById("boton-crear");
 const loginMensaje = document.getElementById("login-mensaje");
 const botonSalir = document.getElementById("boton-salir");
 const form = document.getElementById("form-movimiento");
@@ -22,7 +22,6 @@ if (SUPABASE_URL.includes("PEGA_AQUI")) {
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let movimientos = [];
-let emailPendiente = "";
 
 fechaInput.value = hoy();
 
@@ -40,35 +39,42 @@ function mostrarPantalla(sesion) {
   botonSalir.classList.toggle("hidden", !dentro);
 }
 
-formEmail.addEventListener("submit", async (evento) => {
-  evento.preventDefault();
-  emailPendiente = document.getElementById("email").value.trim();
-  loginMensaje.textContent = "Enviando código...";
+function datosLogin() {
+  return {
+    email: document.getElementById("email").value.trim(),
+    password: document.getElementById("password").value,
+  };
+}
 
-  const { error } = await db.auth.signInWithOtp({ email: emailPendiente });
+formLogin.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  loginMensaje.textContent = "";
+
+  const { error } = await db.auth.signInWithPassword(datosLogin());
 
   if (error) {
-    loginMensaje.textContent = error.message;
+    loginMensaje.textContent = "Correo o contraseña incorrectos.";
+  }
+});
+
+botonCrear.addEventListener("click", async () => {
+  loginMensaje.textContent = "";
+
+  const { data, error } = await db.auth.signUp(datosLogin());
+
+  if (error) {
+    if (error.message.includes("already")) {
+      loginMensaje.textContent = "Esa cuenta ya existe. Usa el botón Entrar.";
+    } else {
+      loginMensaje.textContent = error.message;
+    }
     return;
   }
 
-  loginMensaje.textContent = "Código enviado. Revisa tu correo.";
-  formEmail.classList.add("hidden");
-  formCodigo.classList.remove("hidden");
-});
-
-formCodigo.addEventListener("submit", async (evento) => {
-  evento.preventDefault();
-  const token = document.getElementById("codigo").value.trim();
-
-  const { error } = await db.auth.verifyOtp({
-    email: emailPendiente,
-    token,
-    type: "email",
-  });
-
-  if (error) {
-    loginMensaje.textContent = error.message;
+  if (data.session) {
+    loginMensaje.textContent = "Cuenta creada. ¡Bienvenido!";
+  } else {
+    loginMensaje.textContent = "Cuenta creada. Ahora pulsa Entrar.";
   }
 });
 
