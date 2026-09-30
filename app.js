@@ -5,6 +5,7 @@ const botonCrear = document.getElementById("boton-crear");
 const loginMensaje = document.getElementById("login-mensaje");
 const botonSalir = document.getElementById("boton-salir");
 const botonCambiar = document.getElementById("boton-cambiar");
+const botonOlvide = document.getElementById("boton-olvide");
 const panelCambio = document.getElementById("panel-cambio");
 const formCambio = document.getElementById("form-cambio");
 const cambioMensaje = document.getElementById("cambio-mensaje");
@@ -33,6 +34,12 @@ db.auth.onAuthStateChange((evento, sesion) => {
   mostrarPantalla(sesion);
   if (sesion) {
     cargarMovimientos();
+
+    if (evento === "PASSWORD_RECOVERY") {
+      panelCambio.classList.remove("hidden");
+      cambioMensaje.textContent = "Elige tu nueva contraseña.";
+      document.getElementById("nueva-password").focus();
+    }
   }
 });
 
@@ -111,6 +118,29 @@ botonCambiar.addEventListener("click", () => {
   if (!panelCambio.classList.contains("hidden")) {
     document.getElementById("nueva-password").focus();
   }
+});
+
+botonOlvide.addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+
+  if (!email) {
+    loginMensaje.textContent = "Escribe tu correo arriba y luego pulsa aquí.";
+    return;
+  }
+
+  loginMensaje.textContent = "Enviando correo de recuperación...";
+
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname,
+  });
+
+  if (error) {
+    loginMensaje.textContent = "No se pudo enviar: " + error.message;
+    return;
+  }
+
+  loginMensaje.textContent =
+    "Correo enviado. Ábrelo desde este mismo dispositivo para elegir tu nueva contraseña.";
 });
 
 formCambio.addEventListener("submit", async (evento) => {

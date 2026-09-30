@@ -83,6 +83,22 @@ header p {
   margin-top: 0;
 }
 
+.boton-terciario {
+  display: block;
+  margin-top: 14px;
+  background: none;
+  border: none;
+  color: #2563eb;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.boton-terciario:hover {
+  color: #1d4ed8;
+}
+
 .resumen {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
