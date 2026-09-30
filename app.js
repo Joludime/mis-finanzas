@@ -46,11 +46,22 @@ function datosLogin() {
   };
 }
 
+function validarPassword(password) {
+  if (password.length < 6) {
+    loginMensaje.textContent = "La contraseña debe tener al menos 6 caracteres.";
+    return false;
+  }
+  return true;
+}
+
 formLogin.addEventListener("submit", async (evento) => {
   evento.preventDefault();
   loginMensaje.textContent = "";
 
-  const { error } = await db.auth.signInWithPassword(datosLogin());
+  const { email, password } = datosLogin();
+  if (!validarPassword(password)) return;
+
+  const { error } = await db.auth.signInWithPassword({ email, password });
 
   if (error) {
     loginMensaje.textContent = "No se pudo entrar: " + error.message;
@@ -60,7 +71,10 @@ formLogin.addEventListener("submit", async (evento) => {
 botonCrear.addEventListener("click", async () => {
   loginMensaje.textContent = "";
 
-  const { data, error } = await db.auth.signUp(datosLogin());
+  const { email, password } = datosLogin();
+  if (!validarPassword(password)) return;
+
+  const { data, error } = await db.auth.signUp({ email, password });
 
   if (error) {
     if (error.message.includes("already")) {
