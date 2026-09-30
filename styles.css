@@ -1,0 +1,196 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+header h1 {
+  font-size: 1.8rem;
+}
+
+header p {
+  color: #6b7280;
+}
+
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tarjeta {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.tarjeta .etiqueta {
+  display: block;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.tarjeta strong {
+  font-size: 1.4rem;
+}
+
+.tarjeta.ingreso strong {
+  color: #059669;
+}
+
+.tarjeta.gasto strong {
+  color: #dc2626;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.panel h2 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.panel-header h2 {
+  margin-bottom: 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  align-self: end;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.vacio {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+#lista-movimientos {
+  list-style: none;
+}
+
+.movimiento {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.movimiento:last-child {
+  border-bottom: none;
+}
+
+.movimiento-info {
+  flex: 1;
+}
+
+.movimiento-info .descripcion {
+  font-weight: 600;
+}
+
+.movimiento-info .detalle {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-transform: capitalize;
+}
+
+.movimiento.monto {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.movimiento.monto.ingreso {
+  color: #059669;
+}
+
+.movimiento.monto.gasto {
+  color: #dc2626;
+}
+
+.boton-eliminar {
+  background: transparent;
+  color: #9ca3af;
+  padding: 4px 8px;
+}
+
+.boton-eliminar:hover {
+  color: #dc2626;
+  background: transparent;
+}
