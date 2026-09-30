@@ -4,7 +4,6 @@ const formLogin = document.getElementById("form-login");
 const botonCrear = document.getElementById("boton-crear");
 const loginMensaje = document.getElementById("login-mensaje");
 const botonSalir = document.getElementById("boton-salir");
-const botonCambiar = document.getElementById("boton-cambiar");
 const botonOlvide = document.getElementById("boton-olvide");
 const panelCambio = document.getElementById("panel-cambio");
 const formCambio = document.getElementById("form-cambio");
@@ -48,7 +47,6 @@ function mostrarPantalla(sesion) {
   pantallaLogin.classList.toggle("hidden", dentro);
   app.classList.toggle("hidden", !dentro);
   botonSalir.classList.toggle("hidden", !dentro);
-  botonCambiar.classList.toggle("hidden", !dentro);
 
   if (!dentro) {
     panelCambio.classList.add("hidden");
@@ -110,14 +108,6 @@ botonCrear.addEventListener("click", async () => {
 
 botonSalir.addEventListener("click", async () => {
   await db.auth.signOut();
-});
-
-botonCambiar.addEventListener("click", () => {
-  panelCambio.classList.toggle("hidden");
-  cambioMensaje.textContent = "";
-  if (!panelCambio.classList.contains("hidden")) {
-    document.getElementById("nueva-password").focus();
-  }
 });
 
 botonOlvide.addEventListener("click", async () => {
