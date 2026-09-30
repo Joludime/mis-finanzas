@@ -72,6 +72,17 @@ header p {
   color: #1d4ed8;
 }
 
+.header-botones {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.header-botones button {
+  margin-top: 0;
+}
+
 .resumen {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

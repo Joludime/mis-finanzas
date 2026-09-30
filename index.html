@@ -11,7 +11,10 @@
     <header>
       <h1>Mis Finanzas</h1>
       <p>Organiza tus ingresos y gastos</p>
-      <button id="boton-salir" class="boton-salir hidden" type="button">Cerrar sesión</button>
+      <div class="header-botones">
+        <button id="boton-cambiar" class="boton-secundario hidden" type="button">Cambiar contraseña</button>
+        <button id="boton-salir" class="boton-salir hidden" type="button">Cerrar sesión</button>
+      </div>
     </header>
 
     <section id="pantalla-login" class="panel">
@@ -92,6 +95,18 @@
 
           <button type="submit">Agregar</button>
         </form>
+      </section>
+
+      <section id="panel-cambio" class="panel hidden">
+        <h2>Cambiar contraseña</h2>
+        <form id="form-cambio">
+          <div class="campo">
+            <label for="nueva-password">Nueva contraseña</label>
+            <input type="password" id="nueva-password" minlength="6" placeholder="mínimo 6 caracteres" required>
+          </div>
+          <button type="submit">Guardar</button>
+        </form>
+        <p id="cambio-mensaje" class="mensaje"></p>
       </section>
 
       <section class="panel">

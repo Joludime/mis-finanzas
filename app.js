@@ -4,6 +4,10 @@ const formLogin = document.getElementById("form-login");
 const botonCrear = document.getElementById("boton-crear");
 const loginMensaje = document.getElementById("login-mensaje");
 const botonSalir = document.getElementById("boton-salir");
+const botonCambiar = document.getElementById("boton-cambiar");
+const panelCambio = document.getElementById("panel-cambio");
+const formCambio = document.getElementById("form-cambio");
+const cambioMensaje = document.getElementById("cambio-mensaje");
 const form = document.getElementById("form-movimiento");
 const lista = document.getElementById("lista-movimientos");
 const vacio = document.getElementById("vacio");
@@ -37,6 +41,11 @@ function mostrarPantalla(sesion) {
   pantallaLogin.classList.toggle("hidden", dentro);
   app.classList.toggle("hidden", !dentro);
   botonSalir.classList.toggle("hidden", !dentro);
+  botonCambiar.classList.toggle("hidden", !dentro);
+
+  if (!dentro) {
+    panelCambio.classList.add("hidden");
+  }
 }
 
 function datosLogin() {
@@ -94,6 +103,36 @@ botonCrear.addEventListener("click", async () => {
 
 botonSalir.addEventListener("click", async () => {
   await db.auth.signOut();
+});
+
+botonCambiar.addEventListener("click", () => {
+  panelCambio.classList.toggle("hidden");
+  cambioMensaje.textContent = "";
+  if (!panelCambio.classList.contains("hidden")) {
+    document.getElementById("nueva-password").focus();
+  }
+});
+
+formCambio.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  cambioMensaje.textContent = "";
+
+  const nueva = document.getElementById("nueva-password").value;
+
+  if (nueva.length < 6) {
+    cambioMensaje.textContent = "La contraseña debe tener al menos 6 caracteres.";
+    return;
+  }
+
+  const { error } = await db.auth.updateUser({ password: nueva });
+
+  if (error) {
+    cambioMensaje.textContent = "No se pudo cambiar: " + error.message;
+    return;
+  }
+
+  cambioMensaje.textContent = "Contraseña actualizada correctamente.";
+  formCambio.reset();
 });
 
 form.addEventListener("submit", agregarMovimiento);
